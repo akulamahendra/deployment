@@ -31,5 +31,5 @@
 
     - name: "add group to docker"
       shell: |
-        sudo gpasswd -aG ec2-user docker 
+        sudo gpasswd -a ec2-user docker 
         newgrp docker
