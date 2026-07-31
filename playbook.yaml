@@ -5,7 +5,7 @@
     - name: "install required packages"
       shell: |
         sudo yum update && sudo yum upgrade -y
-        sudo yum install maven git docker java-17-amazon-corretto unzip -y
+        sudo yum install maven git docker -y
     
     - name: "install jenkins"
       shell: |
@@ -16,9 +16,10 @@
 
     - name: "insatll jenkins"
       shell: |
-         rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
-         wget https://pkg.jenkins.io/redhat-stable/jenkins-2.516.3-1.1.noarch.rpm -O /tmp/jenkins.rpm
-         dnf install -y /tmp/jenkins.rpm
+         sudo rpm --import https://pkg.jenkins.io/rpm-stable/jenkins.io-2026.key
+         sudo yum upgrade
+         sudo yum install java-21-amazon-corretto -y
+         sudo yum install jenkins -y
 
     - name: "enable services"
       shell: |
