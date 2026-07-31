@@ -16,9 +16,9 @@
 
     - name: "insatll jenkins"
       shell: |
-        rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
-        curl -o /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
-        yum install -y jenkins
+         rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+         wget https://pkg.jenkins.io/redhat-stable/jenkins-2.516.3-1.1.noarch.rpm -O /tmp/jenkins.rpm
+         dnf install -y /tmp/jenkins.rpm
 
     - name: "enable services"
       shell: |
