@@ -1,6 +1,6 @@
 - hosts: all
   remote_user: ec2-user
-  become_user: yes
+  become: yes
   tasks:
     - name: "install required packages"
       shell: |
