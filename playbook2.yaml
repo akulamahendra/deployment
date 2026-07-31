@@ -1,0 +1,33 @@
+- hosts: web
+  remote_user: ec2-user
+  become_user: yes
+  tasks:
+    - name: "install required packages"
+      shell: |
+        sudo yum update && sudo yum upgrade -y
+        sudo yum install maven git docker java-17-amazon-corretto unzip -y
+    
+    - name: "install jenkins"
+      shell: |
+        cd /tmp
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o awscliv2.zip
+        unzip -o awscliv2.zip
+        ./aws/install --update
+
+    - name: "insatll jenkins"
+      shell: |
+        rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+        curl -o /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+        yum install -y jenkins
+
+    - name: "enable services"
+      shell: |
+        sudo systemctl start docker
+        sudo systemctl enable docker
+        sudo systemctl start jenkins
+        sudo systemctl enable jenkins
+
+    - name: "add group to docker"
+      shell: |
+        sudo gpasswd -aG ec2-user docker 
+        newgrp docker

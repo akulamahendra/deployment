@@ -1,74 +1,41 @@
 pipeline {
     agent any
     
-    environment {
-        DOCKER_IMAGE = 'flask-calculator:latest'
-        DOCKERHUB_USERNAME = 'vivekreddykompelly'  // Your Docker Hub username
-        DOCKERHUB_ACCESS_TOKEN = 'dckr_pat_YI_2uWMNNl0mnq47KUm28kJMYg'  // Your Docker Hub access token
-        DOCKER_REGISTRY = 'vivekreddykompelly/samplerepo'  // Your Docker repository
+    environment variables{
+            AWS_ACCESS_KEY_ID = credentials (aws-access-key-id)
+            AWS_SECRET_ACCESS_KEY = credentials(aws-secret-access-key)
+            AWS_REGION = ap-south-1
     }
-
-    stages {
-        stage('Checkout/source') {
-            steps {
-                // Clone the repository containing your Flask calculator application
-                git 'https://github.com/vrk2299/myapp'  // Replace with your repository URL
+    stages{
+        stage('clone repository'){
+            steps{
+                git ''
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    // Build the Docker image for the Flask application
-                    sh "sudo docker build -t ${DOCKER_IMAGE} ."
-                }
+        stage('terraform init'){
+            steps{
+                sh 'terraform init'
             }
         }
 
-        stage('Test') {
-            steps {
-                script {
-                    // Run unit tests inside the Docker container
-                    sh """
-                    sudo docker run --name test-container ${DOCKER_IMAGE} /bin/sh -c 'python -m unittest discover -s /app/tests'
-                    sudo docker rm test-container
-                    """
-                }
+        stage('terraform apply'){
+            steps{
+                sh 'terraform apply --auto-approve'
             }
         }
 
-        stage('Push to Docker Registry') {
-            steps {
-                script {
-                    // Login to Docker Hub
-                    sh """
-                    echo ${DOCKERHUB_ACCESS_TOKEN} | sudo docker login -u ${DOCKERHUB_USERNAME} --password-stdin
-                    # Tag and push the Docker image
-                    sudo docker tag ${DOCKER_IMAGE} ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE}
-                    sudo docker push ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE}
-                    """
-                }
+        stage('docker image'){
+            steps{
+                sh 'docker built -t myapp .'
             }
         }
 
-        stage('Deploy') {
-            steps {
-                script {
-                    // Deploy the application by running the Docker container
-                    sh """
-                    sudo docker run -d -p 5000:80 ${DOCKER_IMAGE}
-                    """
-                }
+        stage('docker build container'){
+            steps{
+                sh 'docker run -d --name flaskapp -p 3000:80 myapp'
             }
         }
     }
 
-    post {
-        success {
-            echo 'Pipeline executed successfully!'
-        }
-        failure {
-            echo 'Pipeline failed.'
-        }
-    }
 }
