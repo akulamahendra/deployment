@@ -25,18 +25,7 @@ pipeline {
             }
         }
 
-        stage('Debug') {
-            steps {
-                    sh '''
-                            whoami
-                            id
-                            groups
-                            ls -l /var/run/docker.sock
-                            docker ps
-                    '''
-                 }
-            }
-
+       
         stage('docker image'){
             steps{
                 sh 'docker build -t myapp .'
