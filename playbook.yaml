@@ -33,4 +33,4 @@
       shell: |
         sudo gpasswd -a ec2-user docker
         sudo gpasswd -a jenkins docker 
-        
+        sudo systemctl restart docker
