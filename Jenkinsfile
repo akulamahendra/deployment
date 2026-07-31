@@ -1,15 +1,15 @@
 pipeline {
     agent any
     
-    environment variables{
-            AWS_ACCESS_KEY_ID = credentials (aws-access-key-id)
-            AWS_SECRET_ACCESS_KEY = credentials(aws-secret-access-key)
-            AWS_REGION = ap-south-1
+    environment {
+            AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
+            AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
+            AWS_REGION = 'ap-south-1'
     }
     stages{
         stage('clone repository'){
             steps{
-                git ''
+                git 'https://github.com/akulamahendra/deployment.git'
             }
         }
 
